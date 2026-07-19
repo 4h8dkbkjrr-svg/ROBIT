@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 
 void INPUT_arr(void);       // 배열에 값을 입력받는 함수
