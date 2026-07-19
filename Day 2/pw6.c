@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 
 // 두 문자열이 완전히 같으면 1, 다르면 0을 반환 (strcmp 대체)
