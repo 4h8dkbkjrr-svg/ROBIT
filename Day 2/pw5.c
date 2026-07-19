@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 
 // n이 제곱ㄴㄴ수이면 1, 아니면 0
