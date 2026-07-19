@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 
 // 공백 spaces개, 별 stars개를 한 줄에 출력하는 함수
