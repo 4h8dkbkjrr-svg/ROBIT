@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 
 void INPUT_tone(void);   // 8개의 문자를 입력받는 함수
