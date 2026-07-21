@@ -3,17 +3,17 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-char *input = NULL;    // 입력한 문자열 전체를 담을 동적 배열
-int inputLen = 0;      // 입력 문자열의 길이
+char *input = NULL;      // 입력 문자열 전체 (동적 할당)
+int inputLen = 0;        // 입력 문자열의 길이
 
-char **stack = NULL;   // 열린 태그 이름을 저장하는 스택
-int top = 0;           // 스택에 쌓인 개수 (다음에 넣을 자리)
+int *startStack = NULL;  // 열린 태그 이름의 '시작' 위치를 저장하는 스택 (동적 할당)
+int *endStack = NULL;    // 열린 태그 이름의 '끝(다음)' 위치를 저장하는 스택
+int top = 0;             // 스택에 쌓인 개수 (다음에 넣을 자리)
 
 int  READ_input(void);   // 성공 1, 실패 0
 int  INIT_stack(void);   // 성공 1, 실패 0
-void PUSH(char name[]);
-int  SAME_str(char a[], char b[]);        // 같으면 1, 다르면 0
-char *CUT_str(char src[], int start, int end);   // 부분 문자열을 새로 할당
+int  SAME_range(int a1, int a2, int b1, int b2);   // 두 구간이 같은 문자열이면 1
+void PRINT_range(int start, int end);
 void PRINT_indent(int depth);
 int  PARSE(void);        // 성공 1, 실패(잘못된 구조) 0
 void FREE_all(void);
@@ -74,53 +74,42 @@ int READ_input(void)
 // 스택을 동적 할당한다. 태그 개수는 입력 길이를 넘을 수 없으므로 그 크기로 잡는다.
 int INIT_stack(void)
 {
-    stack = (char**)malloc(sizeof(char*) * (inputLen + 1));
-    if (stack == NULL)
+    startStack = (int*)malloc(sizeof(int) * (inputLen + 1));
+    endStack = (int*)malloc(sizeof(int) * (inputLen + 1));
+
+    if (startStack == NULL || endStack == NULL)
     {
         printf("메모리 할당에 실패했습니다.\n");
+        free(startStack);   // NULL이면 free(NULL)이라 안전
+        free(endStack);
         return 0;
     }
+
     top = 0;
     return 1;
 }
 
-// 스택에 태그 이름을 넣는다.
-void PUSH(char name[])
+// input의 [a1,a2) 구간과 [b1,b2) 구간이 같은 문자열이면 1, 아니면 0
+int SAME_range(int a1, int a2, int b1, int b2)
 {
-    stack[top] = name;
-    top = top + 1;
-}
+    if (a2 - a1 != b2 - b1)   // 길이가 다르면 다른 문자열
+        return 0;
 
-// 두 문자열이 같으면 1, 다르면 0 (string.h 없이 직접 비교)
-int SAME_str(char a[], char b[])
-{
-    int i = 0;
-    while (a[i] != '\0' && b[i] != '\0')
+    for (int i = 0; i < a2 - a1; i++)
     {
-        if (a[i] != b[i])
+        if (input[a1 + i] != input[b1 + i])
             return 0;
-        i = i + 1;
     }
-    return a[i] == b[i];   // 둘 다 동시에 끝나야 같은 문자열
+    return 1;
 }
 
-// src의 start부터 end 직전까지를 잘라 새 문자열로 만들어 반환한다.
-char *CUT_str(char src[], int start, int end)
+// input의 [start,end) 구간을 그대로 출력한다.
+void PRINT_range(int start, int end)
 {
-    int len = end - start;
-    char *out = (char*)malloc(sizeof(char) * (len + 1));
-    if (out == NULL)
+    for (int i = start; i < end; i++)
     {
-        printf("메모리 할당에 실패했습니다.\n");
-        return NULL;
+        printf("%c", input[i]);
     }
-
-    for (int i = 0; i < len; i++)
-    {
-        out[i] = src[start + i];
-    }
-    out[len] = '\0';
-    return out;
 }
 
 // 깊이만큼 들여쓰기(한 단계에 공백 4칸)를 출력한다.
@@ -155,25 +144,19 @@ int PARSE(void)
                     return 0;
                 }
 
-                char *name = CUT_str(input, start, j);
-                if (name == NULL)
-                    return 0;
-
-                // 스택이 비었거나 맨 위 태그와 이름이 다르면 잘못된 구조
-                if (top == 0 || SAME_str(stack[top - 1], name) == 0)
+                // 스택이 비었거나 맨 위 여는 태그와 이름이 다르면 잘못된 구조
+                if (top == 0 || SAME_range(startStack[top - 1], endStack[top - 1], start, j) == 0)
                 {
                     printf("잘못된 태그 구조입니다.\n");
-                    free(name);
                     return 0;
                 }
-
-                top = top - 1;
-                free(stack[top]);   // 짝이 맞은 여는 태그를 스택에서 제거
+                top = top - 1;   // 짝이 맞은 여는 태그를 스택에서 제거
 
                 depth = depth - 1;
                 PRINT_indent(depth);
-                printf("</%s>\n", name);
-                free(name);
+                printf("</");
+                PRINT_range(start, j);
+                printf(">\n");
 
                 i = j + 1;
             }
@@ -189,23 +172,23 @@ int PARSE(void)
                     printf("잘못된 태그 구조입니다.\n");
                     return 0;
                 }
-
-                char *name = CUT_str(input, start, j);
-                if (name == NULL)
-                    return 0;
-                if (name[0] == '\0')   // 이름이 빈 태그 <>
+                if (j == start)   // 이름이 빈 태그 <>
                 {
                     printf("잘못된 태그 구조입니다.\n");
-                    free(name);
                     return 0;
                 }
 
                 PRINT_indent(depth);
-                printf("<%s>\n", name);
+                printf("<");
+                PRINT_range(start, j);
+                printf(">\n");
 
-                PUSH(name);   // 닫힐 때까지 스택이 이름을 보관
+                // 스택에 태그 이름의 위치를 저장 (닫힐 때 비교에 사용)
+                startStack[top] = start;
+                endStack[top] = j;
+                top = top + 1;
+
                 depth = depth + 1;
-
                 i = j + 1;
             }
         }
@@ -216,13 +199,9 @@ int PARSE(void)
             while (input[j] != '<' && input[j] != '\0')
                 j = j + 1;
 
-            char *text = CUT_str(input, start, j);
-            if (text == NULL)
-                return 0;
-
             PRINT_indent(depth);
-            printf("%s\n", text);
-            free(text);
+            PRINT_range(start, j);
+            printf("\n");
 
             i = j;
         }
@@ -239,11 +218,7 @@ int PARSE(void)
 
 void FREE_all(void)
 {
-    // 오류로 중단되어 스택에 남은 태그 이름들을 정리
-    for (int i = 0; i < top; i++)
-    {
-        free(stack[i]);
-    }
-    free(stack);
+    free(startStack);
+    free(endStack);
     free(input);
 }
