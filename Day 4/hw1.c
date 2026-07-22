@@ -43,7 +43,7 @@ int  INPUT_Student_data(Student arr[], int size);
 void SORTING_data(Student arr[], int size);
 // ㄴ정렬 함수
 //  > 1. 학년 -> 성적 -> 이름 순의 우선순위로
-//  > 2. 버블 정렬을 이용해 오름차순으로 정렬한다.
+//  > 2. 오름차순으로 정렬한다.
 
 void OUTPUT_Student_data(Student arr[], int size);
 // ㄴ결과 출력 함수
