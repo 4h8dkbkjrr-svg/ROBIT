@@ -8,6 +8,7 @@
 //  > 3. 특히 정렬 기능을 구현하는데 어려움이 매우 커서, Claude의 도움이 필수적이라고 판단, Claude로 초안을 작성하고 최대한 로직을 이해하려 했습니다.
 //
 //  Created by Lee DY on 7/23/26. Xcode
+#define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
 #include <stdlib.h>
