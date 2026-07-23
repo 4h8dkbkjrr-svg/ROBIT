@@ -16,6 +16,7 @@
 //  AI 주요 디버깅 내역과, 코드 설명 주석은 기본적으로 Claude에 의해 작성되지 않았습니다.
 //
 //  Created by Lee DY on 7/23/26. Xcode
+#define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
 #include <stdlib.h>
