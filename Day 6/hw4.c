@@ -21,6 +21,7 @@
 //  > * 이중 포인터 사용 과정에서 Claude에게 궁금한 점을 질문하고, 도움을 받았습니다.
 //
 //  Created by Lee DY on 7/23/26. Xcode
+#define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
 #include <stdlib.h>
