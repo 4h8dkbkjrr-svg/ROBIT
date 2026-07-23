@@ -17,8 +17,7 @@
 //
 //  Created by Lee DY on 7/23/26. Xcode
 
-#define _CRT_SECURE_NO_WARNINGS   // Visual Studio 에서 scanf 를 쓸 때 뜨는 경고를 끈다.
-// ㄴ헤더보다 먼저 선언해야 적용된다.
+#define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
 #include <stdlib.h>
