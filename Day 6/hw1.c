@@ -12,6 +12,8 @@
 //
 //  Created by Lee DY on 7/23/26. Xcode
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -583,7 +585,7 @@ void DELETE_back(void)
 /* ---------- [14] 요소 찾기 함수 ------------ */
 /*
 
- > 1. 기준을 입력받는다. (1: data 로 찾아 index 출력, 2: index 로 찾아 data 출력)
+ > 1. 기준을 입력받는다. (1: data 로 찾으면 index 출력, 2: index 로 찾으면 data 출력)
  > 2. data 기준이면 처음 일치하는 노드의 index 를 출력한다.
  > 3. index 기준이면 그 위치 노드의 data 를 출력한다.
 
