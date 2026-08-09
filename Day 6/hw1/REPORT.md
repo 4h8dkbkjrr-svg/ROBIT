@@ -279,7 +279,7 @@ ADC 값이 나오기는 하나 오차가 크고 시간에 따라 표류하는 �
 
 | 시연 영상 |
 | :---: |
-| [6일차 과제 1 시연 영상](https://drive.google.com/file/d/1xv7zHqyySpIDBoFYEU50qdqFYMK7m-FY/view?usp=drivesdk) |
+| [6일차 과제 1 시연 영상](https://drive.google.com/file/d/1tG8qe6wchcgOEj3AAFuNa15-ss6_f-MZ/view?usp=drivesdk) |
 
 ---
 
